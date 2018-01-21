@@ -1,0 +1,21 @@
+buildscript {
+	repositories {
+		maven { url "http://mocs-artefacts.ensta-bretagne.fr/plug-repo/" }
+	}
+	dependencies {
+		classpath group: 'fr.ensta-bretagne', name: 'plug-plugin', version: '+'
+	}
+}
+
+apply plugin: 'plug.plugin'
+
+dependencies {
+   compile group: 'fr.ensta-bretagne', name: 'plug-core', version: plug.version
+   compile group: 'fr.ensta-bretagne', name: 'plug-runtime-buchikripke', version: plug.version
+   compile group: 'fr.ensta-bretagne', name: 'LTL', version: plug.version
+   //LTL should be first because OBP has it also
+   compile group: 'fr.ensta-bretagne', name: 'plug-runtime-via-tcp', version: plug.version
+   //END --- should not depend on the precedent packages --- END
+}
+
+project.ext["ideaGroupName"]="plug/languages"
