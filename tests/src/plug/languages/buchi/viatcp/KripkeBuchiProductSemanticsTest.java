@@ -5,7 +5,8 @@ import org.junit.Test;
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
 import plug.explorer.AcceptanceCycleDetectedException;
-import plug.explorer.BuchiGaiserSchwoon;
+import plug.explorer.buchi.BuchiGaiserSchwoonIterative;
+import plug.explorer.buchi.BuchiGaiserSchwoonRecursive;
 import plug.language.buchi.runtime.BuchiRuntime;
 import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
 import plug.language.viatcp.ViaTCPModule;
@@ -21,7 +22,7 @@ import properties.PropositionalLogic.PropositionalLogicModel.Expression;
 import java.io.PrintWriter;
 
 public class KripkeBuchiProductSemanticsTest {
-    ILanguageModule fiacreModule = new ViaTCPModule();
+    ILanguageModule module = new ViaTCPModule();
 
      ILanguageRuntime getViaTCPRuntime() {
          return new ViaTCPRuntime("localhost", 12345);
@@ -101,30 +102,26 @@ public class KripkeBuchiProductSemanticsTest {
          verify_iterative(ltl);
      }
 
-    // private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-    //     ILanguageRuntime kripkeRuntime = getFiacreRuntime(fileName);
-    //     BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-    //     BuchiRuntime buchiRuntime = new BuchiRuntime();
+     private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
+         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
-    //     buchiRuntime.buchiAutomaton = buchiAutomaton;
+         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+         BuchiGaiserSchwoonRecursive verifier = new BuchiGaiserSchwoonRecursive();
+         verifier.setRuntime(kbProductSemantics);
 
-    //     KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, buchiRuntime);
-    //     BuchiGaiserSchwoon verifier = new BuchiGaiserSchwoon();
-    //     verifier.setRuntime(kbProductSemantics);
-
-    //     verifier.verify_recursive();
-    // }
+         verifier.verify();
+     }
 
      private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime();
+         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
-         buchiRuntime.buchiAutomaton = buchiAutomaton;
+         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
 
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, buchiRuntime);
-
-         BuchiGaiserSchwoon verifier = new BuchiGaiserSchwoon();
+         BuchiGaiserSchwoonIterative verifier = new BuchiGaiserSchwoonIterative();
          verifier.setRuntime(kbProductSemantics);
 
          verifier.verify();
