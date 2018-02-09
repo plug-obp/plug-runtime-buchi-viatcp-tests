@@ -14,7 +14,7 @@ dependencies {
    compile group: 'fr.ensta-bretagne', name: 'plug-runtime-buchikripke', version: plug.version
    compile group: 'fr.ensta-bretagne', name: 'LTL', version: plug.version
    //LTL should be first because OBP has it also
-   compile group: 'fr.ensta-bretagne', name: 'plug-runtime-via-tcp', version: plug.version
+   compile group: 'fr.ensta-bretagne', name: 'plug-runtime-viatcp', version: plug.version
    //END --- should not depend on the precedent packages --- END
 }
 
