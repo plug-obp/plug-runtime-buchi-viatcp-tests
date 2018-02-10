@@ -4,9 +4,9 @@ package plug.languages.buchi.viatcp;
 import org.junit.Test;
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
-import plug.explorer.AcceptanceCycleDetectedException;
-import plug.explorer.buchi.BuchiGaiserSchwoonIterative;
-import plug.explorer.buchi.BuchiGaiserSchwoonRecursive;
+import plug.explorer.buchi.AcceptanceCycleDetectedException;
+import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
+import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
 import plug.language.buchi.runtime.BuchiRuntime;
 import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
 import plug.language.viatcp.ViaTCPModule;
@@ -108,7 +108,7 @@ public class KripkeBuchiProductSemanticsTest {
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-         BuchiGaiserSchwoonRecursive verifier = new BuchiGaiserSchwoonRecursive();
+         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
          verifier.setRuntime(kbProductSemantics);
 
          verifier.verify();
@@ -121,7 +121,7 @@ public class KripkeBuchiProductSemanticsTest {
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
 
-         BuchiGaiserSchwoonIterative verifier = new BuchiGaiserSchwoonIterative();
+         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
          verifier.setRuntime(kbProductSemantics);
 
          verifier.verify();
