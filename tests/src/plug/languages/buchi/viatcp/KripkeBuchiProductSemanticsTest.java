@@ -111,7 +111,7 @@ public class KripkeBuchiProductSemanticsTest {
          BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
          verifier.setRuntime(kbProductSemantics);
 
-         verifier.verify();
+         verifier.execute();
      }
 
      private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
@@ -124,6 +124,6 @@ public class KripkeBuchiProductSemanticsTest {
          BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
          verifier.setRuntime(kbProductSemantics);
 
-         verifier.verify();
+         verifier.execute();
      }
 }
