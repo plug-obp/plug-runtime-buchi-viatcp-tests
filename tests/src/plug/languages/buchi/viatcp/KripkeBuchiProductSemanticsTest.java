@@ -31,7 +31,7 @@ public class KripkeBuchiProductSemanticsTest {
 	/**
 	 * Instance of the fiacre module.
 	 */
-	ILanguageModule fiacreModule;
+	ILanguageModule module;
 	
 	/**
 	 * Instance of the runtime that interprets the model.
@@ -45,7 +45,7 @@ public class KripkeBuchiProductSemanticsTest {
      */
 	public KripkeBuchiProductSemanticsTest()
     {
-    	this.fiacreModule = new ViaTCPModule();
+    	this.module = new ViaTCPModule();
     	this.runtime = new ViaTCPRuntime("localhost", 12121);
     }
 
@@ -72,23 +72,45 @@ public class KripkeBuchiProductSemanticsTest {
     	return decl;
      }
 
+///////////////////////////////////////////////// Model ALiceBobPetterson /////////////////////////////////////////////////
+//     @Test
+//     public void testMutualExclusionOK() {
+//         String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
+//         verify("", ltl);
+//     }
+//     
+//     @Test
+//     public void testMutualExclusionNOK() {
+//         String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
+//         verify("", ltl);
+//     }
+//     
+//     @Test
+//     public void testFairnessPetterson() {
+//    	 String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
+//         verify("", ltl);
+//      }
+     
+/////////////////////////////////////////////////Model Case0sync /////////////////////////////////////////////////
      @Test
-     public void testMutualExclusionOK() {
-         String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
+     public void testGateOpened() {
+         String ltl = "exclusion = ![]!(|train.state == STATE_TRAIN_WAITEXITDETECTION| && |gate.state == STATE_GATE_OPENED|)";
          verify("", ltl);
      }
      
      @Test
-     public void testMutualExclusionNOK() {
-         String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
+     public void testGateOpenedAtEnd() {
+         String ltl = "exclusion = ![]!(|train.state == STATE_TRAIN_DONE| && |gate.state == STATE_GATE_CLOSED|)";
          verify("", ltl);
      }
      
-     @Test
-     public void testFairnessPetterson() {
-    	 String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
-         verify("", ltl);
-      }
+//     @Test
+//     public void testRoadSignOffAtEnd() {  // Not verified but I know why
+//         String ltl = "exclusion = ![]!(|train.state == STATE_TRAIN_DONE| && |roadSign.state == STATE_ROADSIGN_ACTIVE|)";
+//         verify("", ltl);
+//     }
+     
+     
 
      /*@Test(expected = AcceptanceCycleDetectedException.class)
      public void testMutualExclusionNOK() {
@@ -172,11 +194,9 @@ public class KripkeBuchiProductSemanticsTest {
      private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
     	 ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
     	 BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-    	 BuchiRuntime buchiRuntime = new BuchiRuntime();
+    	 BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
-    	 buchiRuntime.buchiAutomaton = buchiAutomaton;
-
-    	 KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, buchiRuntime);
+    	 KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, this.module, buchiRuntime);
     	 BuchiGaiserSchwoon verifier = new BuchiGaiserSchwoon();
     	 verifier.setRuntime(kbProductSemantics);
 
@@ -192,11 +212,9 @@ public class KripkeBuchiProductSemanticsTest {
      private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime();
+         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
-         buchiRuntime.buchiAutomaton = buchiAutomaton;
-
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, buchiRuntime);
+         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, this.module, buchiRuntime);
 
          BuchiGaiserSchwoon verifier = new BuchiGaiserSchwoon();
          verifier.setRuntime(kbProductSemantics);
