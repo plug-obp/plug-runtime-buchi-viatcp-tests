@@ -1,6 +1,6 @@
 package plug.languages.buchi.viatcp;
 
-
+import java.io.PrintWriter;
 import org.junit.Test;
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
@@ -12,14 +12,10 @@ import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
 import plug.language.viatcp.ViaTCPModule;
 import plug.language.viatcp.runtime.ViaTCPRuntime;
 import properties.BuchiAutomata.BuchiAutomataModel.BuchiDeclaration;
-
-
 import properties.LTL.parser.Parser;
 import properties.LTL.transformations.LTL2Buchi;
 import properties.PropositionalLogic.PropositionalLogicModel.DeclarationBlock;
 import properties.PropositionalLogic.PropositionalLogicModel.Expression;
-
-import java.io.PrintWriter;
 
 public class KripkeBuchiProductSemanticsTest {
     ILanguageModule module = new ViaTCPModule();
@@ -108,9 +104,7 @@ public class KripkeBuchiProductSemanticsTest {
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
-         verifier.setRuntime(kbProductSemantics);
-
+         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive(kbProductSemantics);
          verifier.execute();
      }
 
@@ -121,9 +115,7 @@ public class KripkeBuchiProductSemanticsTest {
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
 
-         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
-         verifier.setRuntime(kbProductSemantics);
-
+         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics);
          verifier.execute();
      }
 }
