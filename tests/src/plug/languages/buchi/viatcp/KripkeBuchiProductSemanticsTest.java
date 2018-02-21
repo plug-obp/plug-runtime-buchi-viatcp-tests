@@ -22,12 +22,40 @@ import properties.PropositionalLogic.PropositionalLogicModel.Expression;
 import java.io.PrintWriter;
 
 public class KripkeBuchiProductSemanticsTest {
-    ILanguageModule module = new ViaTCPModule();
+	
+	/**
+	 * The instance of the language module.
+	 */
+    ILanguageModule module;
+    
+    /**
+     * The instance of the model interpreter runtime.
+     */
+    ViaTCPRuntime runtime;
+    
+    /**
+     * Constructor of KripkeBuchiProductSemanticsTest.
+     * 
+     * @return an instance of KripkeBuchiProductSemanticsTest.
+     */
+    public KripkeBuchiProductSemanticsTest() {
+    	module = new ViaTCPModule();
+    	runtime = new ViaTCPRuntime("localhost", 12121);
+    }
 
+    /**
+     * Getter of the model interpreter runtime.
+     * @return the instance of the model interpreter runtime
+     */
      ILanguageRuntime getViaTCPRuntime() {
-         return new ViaTCPRuntime("localhost", 12345);
+    	 return runtime;
      }
 
+     /**
+      * Get the Buchi declaration corresponding to a LTL formula.
+      * @param ltlFormula the LTL formula.
+      * @return the Buchi declaration.
+      */
      BuchiDeclaration getBuchiDeclaration(String ltlFormula) {
          DeclarationBlock propertiesBlock = Parser.parseBlock(ltlFormula);
          Expression property = propertiesBlock.getDeclarations().iterator().next().getExpression();
@@ -37,17 +65,67 @@ public class KripkeBuchiProductSemanticsTest {
          return decl;
      }
 
-     @Test(expected = AcceptanceCycleDetectedException.class)
-     public void testMutualExclusionNOK() {
-         String ltl = "exclusion = ![]!(|{Alice}1@CS| && |{Bob}1@CS|)";
-         verify("tests/resources/AliceBob0.fcr", ltl);
-     }
+///////////////////////////////////////////////// Model ALiceBobPetterson /////////////////////////////////////////////////
+//	@Test
+//	public void testMutualExclusionOK() {
+//	String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
+//	verify("", ltl);
+//	}
+//	
+//	@Test
+//	public void testMutualExclusionNOK() {
+//	String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
+//	verify("", ltl);
+//	}
+//	
+//	@Test
+//	public void testFairnessPetterson() {
+//	String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
+//	verify("", ltl);
+//	}
+	
+///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
+	@Test
+	public void testGateClosed() {
+	String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| || |train.state == STATE_TRAIN_WAITEXITDETECTION|) && |gate.state == STATE_GATE_OPENED|)";
+	verify("", ltl);
+	}
+	
+	@Test
+	public void testRoadSignActive() {
+	String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| || |train.state == STATE_TRAIN_WAITEXITDETECTION|) && |gate.state == STATE_ROADSIGN_INACTIVE|)";
+	verify("", ltl);
+	}
+	
+	@Test
+	public void testGateOpenedAtEnd() {
+	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |gate.state == STATE_GATE_CLOSED|)";
+	verify("", ltl);
+	}
+	
+	@Test
+	public void testRoadSignInactiveAtEnd() {
+	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+	verify("", ltl);
+	}
+	
+	@Test
+	public void testGateOpenedAtferBeingClosed() {
+	String ltl = "vivacite = ! ([] |gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
+	verify("", ltl);
+	}
 
-    // @Test
-    // public void testMutualExclusionOK() {
-    //     String ltl = "exclusion = ![]!(|{Alice}1@CS| && |{Bob}1@CS|)";
-    //     verify("tests/resources/AliceBob1.fcr", ltl);
-    // }
+	
+	
+	
+	
+	
+	
+	//@Test
+	//public void testRoadSignOffAtEnd() {  // Not verified but I know why
+	//String ltl = "exclusion = ![]!(|train.state == STATE_TRAIN_DONE| && |roadSign.state == STATE_ROADSIGN_ACTIVE|)";
+	//verify("", ltl);
+	//}
 
     // @Test(expected = AcceptanceCycleDetectedException.class)
     // public void testEventuallyCS2() {
@@ -97,9 +175,11 @@ public class KripkeBuchiProductSemanticsTest {
     //     verify("tests/resources/AliceBobMeetPeterson.fcr", ltl);
     // }
 
-     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {    	 
          //verify_recursive(fileName, ltl);
          verify_iterative(ltl);
+         
+         runtime.closeConnection();
      }
 
      private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
