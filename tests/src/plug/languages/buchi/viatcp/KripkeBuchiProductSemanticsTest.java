@@ -1,6 +1,7 @@
 package plug.languages.buchi.viatcp;
 
 
+
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -13,6 +14,7 @@ import plug.explorer.BFSExplorer;
 import plug.statespace.SimpleStateSpaceManager;
 import plug.verifiers.deadlock.DeadlockVerifier;
 import plug.verifiers.deadlock.FinalStateDetected;
+
 
 public class KripkeBuchiProductSemanticsTest {
 	
@@ -171,37 +173,6 @@ public class KripkeBuchiProductSemanticsTest {
     //     verify("tests/resources/AliceBobMeetPeterson.fcr", ltl);
     // }
 
-//     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-//    	 runtime.getPilot().resetInterpretation();
-//    	 
-//         //verify_recursive(fileName, ltl);
-//         verify_iterative(ltl);
-//     }
-//
-//     private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-//         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
-//         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-//         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-//
-//         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-//         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
-//         verifier.setRuntime(kbProductSemantics);
-//
-//         verifier.execute();
-//     }
-//
-//     private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
-//         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
-//         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-//         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-//
-//         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-//
-//         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
-//         verifier.setRuntime(kbProductSemantics);
-//
-//         verifier.execute();
-//     }
 }
 
 
