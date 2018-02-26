@@ -3,136 +3,90 @@ package plug.languages.buchi.viatcp;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.PrintWriter;
-
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
 import plug.explorer.AbstractExplorer;
 import plug.explorer.BFSExplorer;
-import plug.explorer.buchi.AcceptanceCycleDetectedException;
-import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
-import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
-import plug.language.buchi.runtime.BuchiRuntime;
-import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
-import plug.language.viatcp.ViaTCPModule;
-import plug.language.viatcp.runtime.ViaTCPRuntime;
 import plug.statespace.SimpleStateSpaceManager;
 import plug.verifiers.deadlock.DeadlockVerifier;
 import plug.verifiers.deadlock.FinalStateDetected;
-import properties.BuchiAutomata.BuchiAutomataModel.BuchiDeclaration;
-import properties.LTL.parser.Parser;
-import properties.LTL.transformations.LTL2Buchi;
-import properties.PropositionalLogic.PropositionalLogicModel.DeclarationBlock;
-import properties.PropositionalLogic.PropositionalLogicModel.Expression;
 
 public class KripkeBuchiProductSemanticsTest {
 	
-	/**
-	 * The instance of the language module.
-	 */
-    ILanguageModule module;
-    
-    /**
-     * The instance of the model interpreter runtime.
-     */
-	ViaTCPRuntime runtime;
-    
+	private static KripkeBuchiProductSemanticsHelper productSemantics;
+
     /**
      * Constructor of KripkeBuchiProductSemanticsTest.
      * 
      * @return an instance of KripkeBuchiProductSemanticsTest.
      */
     public KripkeBuchiProductSemanticsTest() {
-    	module = new ViaTCPModule();
-    	runtime = new ViaTCPRuntime("localhost", 12121);
+    	
     }
 
-    /**
-     * Getter of the model interpreter runtime.
-     * @return the instance of the model interpreter runtime
-     */
-     ILanguageRuntime getViaTCPRuntime() {
-    	 return runtime;
-     }
-
-     /**
-      * Get the Buchi declaration corresponding to a LTL formula.
-      * @param ltlFormula the LTL formula.
-      * @return the Buchi declaration.
-      */
-     BuchiDeclaration getBuchiDeclaration(String ltlFormula) {
-         DeclarationBlock propertiesBlock = Parser.parseBlock(ltlFormula);
-         Expression property = propertiesBlock.getDeclarations().iterator().next().getExpression();
-         LTL2Buchi convertor = new LTL2Buchi(new PrintWriter(System.out));
-
-         BuchiDeclaration decl = convertor.convert(property);
-         return decl;
-     }
+    @BeforeClass
+    public static void setUpClass() {
+    	// Initialize stuff before every test
+    	productSemantics = new KripkeBuchiProductSemanticsHelper();
+    }
      
-     
-     @Before
-     public void setUp() {
-    	 // Initialize stuff before every test
-    	 //runtime.getPilot().resetInterpretation();
-     }
-     
-     @After
-     public void tearDown() {
+     @AfterClass
+     public static void tearDownClass() {
     	 // Do something after each test
-    	 runtime.closeConnection();
+    	 productSemantics.getViaTCPRuntimeRealType().closeConnection();
      }
 
 ///////////////////////////////////////////////// Model ALiceBobPetterson /////////////////////////////////////////////////
 //	@Test
 //	public void testMutualExclusionOK() {
 //	String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
-//	verify("", ltl);
+//	productSemantics.verify("", ltl);
 //	}
-//	
+	
 //	@Test
 //	public void testMutualExclusionNOK() {
 //	String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
-//	verify("", ltl);
+//	productSemantics.verify("", ltl);
 //	}
-//	
+	
 //	@Test
 //	public void testFairnessPetterson() {
 //	String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
-//	verify("", ltl);
+//	productSemantics.verify("", ltl);
 //	}
 	
 ///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
+
 	@Test
 	public void testGateClosed() {
-	String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| || |train.state == STATE_TRAIN_WAITEXITDETECTION|) && |gate.state == STATE_GATE_OPENED|)";
-	verify("", ltl);
+		String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| or |train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_GATE_OPENED|)";
+		productSemantics.verify("", ltl);
 	}
 	
 	@Test
 	public void testRoadSignActive() {
-	String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| || |train.state == STATE_TRAIN_WAITEXITDETECTION|) && |gate.state == STATE_ROADSIGN_INACTIVE|)";
-	verify("", ltl);
+		String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| or |train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_ROADSIGN_INACTIVE|)";
+		productSemantics.verify("", ltl);
 	}
 	
 	@Test
 	public void testGateOpenedAtferBeingClosed() {
-	String ltl = "vivacite = ! ([] |gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
-	verify("", ltl);
+		String ltl = "vivacite = ! ([] |gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
+		productSemantics.verify("", ltl);
 	}
 
 	@Test
 	public void testRoadSignActiveAtferBeingInactive() {
-	String ltl = "vivacite = ! ([] |roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
-	verify("", ltl);
+		String ltl = "vivacite = ! ([] |roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+		productSemantics.verify("", ltl);
 	}
 	
 	@Test
 	public void deadlockfree() {
-		ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+		ILanguageRuntime kripkeRuntime =  productSemantics.getViaTCPRuntime();
 		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
 
 		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
@@ -146,7 +100,6 @@ public class KripkeBuchiProductSemanticsTest {
 		explorer.execute();
 
 		assertTrue("The model has a deadlock.", deadLockFree[0]);
-		
 	}
 
 	
@@ -218,35 +171,37 @@ public class KripkeBuchiProductSemanticsTest {
     //     verify("tests/resources/AliceBobMeetPeterson.fcr", ltl);
     // }
 
-     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-    	 runtime.getPilot().resetInterpretation();
-    	 
-         //verify_recursive(fileName, ltl);
-         verify_iterative(ltl);
-     }
-
-     private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
-         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
-         verifier.setRuntime(kbProductSemantics);
-
-         verifier.execute();
-     }
-
-     private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
-         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
-         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
-
-         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
-         verifier.setRuntime(kbProductSemantics);
-
-         verifier.execute();
-     }
+//     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+//    	 runtime.getPilot().resetInterpretation();
+//    	 
+//         //verify_recursive(fileName, ltl);
+//         verify_iterative(ltl);
+//     }
+//
+//     private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+//         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+//         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
+//         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+//
+//         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+//         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive();
+//         verifier.setRuntime(kbProductSemantics);
+//
+//         verifier.execute();
+//     }
+//
+//     private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
+//         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+//         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
+//         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+//
+//         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+//
+//         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative();
+//         verifier.setRuntime(kbProductSemantics);
+//
+//         verifier.execute();
+//     }
 }
+
+
