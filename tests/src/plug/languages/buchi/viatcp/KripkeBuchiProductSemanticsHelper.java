@@ -69,8 +69,6 @@ public class KripkeBuchiProductSemanticsHelper {
 
 
      public void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
-    	 runtime.getPilot().resetInterpretation();
-    	 
          //verify_recursive(fileName, ltl);
          verify_iterative(ltl);
      }
