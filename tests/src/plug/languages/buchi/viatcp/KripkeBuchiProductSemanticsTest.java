@@ -1,9 +1,18 @@
 package plug.languages.buchi.viatcp;
 
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.PrintWriter;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
+import plug.explorer.AbstractExplorer;
+import plug.explorer.BFSExplorer;
 import plug.explorer.buchi.AcceptanceCycleDetectedException;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
@@ -11,15 +20,14 @@ import plug.language.buchi.runtime.BuchiRuntime;
 import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
 import plug.language.viatcp.ViaTCPModule;
 import plug.language.viatcp.runtime.ViaTCPRuntime;
+import plug.statespace.SimpleStateSpaceManager;
+import plug.verifiers.deadlock.DeadlockVerifier;
+import plug.verifiers.deadlock.FinalStateDetected;
 import properties.BuchiAutomata.BuchiAutomataModel.BuchiDeclaration;
-
-
 import properties.LTL.parser.Parser;
 import properties.LTL.transformations.LTL2Buchi;
 import properties.PropositionalLogic.PropositionalLogicModel.DeclarationBlock;
 import properties.PropositionalLogic.PropositionalLogicModel.Expression;
-
-import java.io.PrintWriter;
 
 public class KripkeBuchiProductSemanticsTest {
 	
@@ -31,7 +39,7 @@ public class KripkeBuchiProductSemanticsTest {
     /**
      * The instance of the model interpreter runtime.
      */
-    ViaTCPRuntime runtime;
+	ViaTCPRuntime runtime;
     
     /**
      * Constructor of KripkeBuchiProductSemanticsTest.
@@ -63,6 +71,19 @@ public class KripkeBuchiProductSemanticsTest {
 
          BuchiDeclaration decl = convertor.convert(property);
          return decl;
+     }
+     
+     
+     @Before
+     public void setUp() {
+    	 // Initialize stuff before every test
+    	 //runtime.getPilot().resetInterpretation();
+     }
+     
+     @After
+     public void tearDown() {
+    	 // Do something after each test
+    	 runtime.closeConnection();
      }
 
 ///////////////////////////////////////////////// Model ALiceBobPetterson /////////////////////////////////////////////////
@@ -98,29 +119,51 @@ public class KripkeBuchiProductSemanticsTest {
 	}
 	
 	@Test
-	public void testGateOpenedAtEnd() {
-	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |gate.state == STATE_GATE_CLOSED|)";
-	verify("", ltl);
-	}
-	
-	@Test
-	public void testRoadSignInactiveAtEnd() {
-	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
-	verify("", ltl);
-	}
-	
-	@Test
 	public void testGateOpenedAtferBeingClosed() {
 	String ltl = "vivacite = ! ([] |gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
 	verify("", ltl);
 	}
 
+	@Test
+	public void testRoadSignActiveAtferBeingInactive() {
+	String ltl = "vivacite = ! ([] |roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+	verify("", ltl);
+	}
+	
+	@Test
+	public void deadlockfree() {
+		ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
+
+		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
+
+		boolean deadLockFree[] = new boolean[] { true };
+		dV.announcer.when(FinalStateDetected.class, (ann, ev) -> {
+			System.out.println("Final state detected: " + ev.getFinalState() );
+			deadLockFree[0] = false;
+		});
+
+		explorer.execute();
+
+		assertTrue("The model has a deadlock.", deadLockFree[0]);
+		
+	}
+
+	
+//	@Test
+//	public void testGateOpenedAtEnd() {
+//	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |gate.state == STATE_GATE_CLOSED|)";
+//	verify("", ltl);
+//	}
+//	
+//	@Test
+//	public void testRoadSignInactiveAtEnd() {
+//	String ltl = "vivacite = ! ([] |train.state == STATE_TRAIN_DONE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+//	verify("", ltl);
+//	}
 	
 	
-	
-	
-	
-	
+///////////////////////////////////////////////// Others /////////////////////////////////////////////////	
 	//@Test
 	//public void testRoadSignOffAtEnd() {  // Not verified but I know why
 	//String ltl = "exclusion = ![]!(|train.state == STATE_TRAIN_DONE| && |roadSign.state == STATE_ROADSIGN_ACTIVE|)";
@@ -175,11 +218,11 @@ public class KripkeBuchiProductSemanticsTest {
     //     verify("tests/resources/AliceBobMeetPeterson.fcr", ltl);
     // }
 
-     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {    	 
+     private void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+    	 runtime.getPilot().resetInterpretation();
+    	 
          //verify_recursive(fileName, ltl);
          verify_iterative(ltl);
-         
-         runtime.closeConnection();
      }
 
      private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
