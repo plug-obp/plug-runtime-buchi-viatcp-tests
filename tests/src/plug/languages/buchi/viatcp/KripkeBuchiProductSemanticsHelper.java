@@ -82,7 +82,6 @@ public class KripkeBuchiProductSemanticsHelper {
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
          BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive(kbProductSemantics);
-         //verifier.setRuntime(kbProductSemantics);
 
          verifier.execute();
      }
@@ -93,8 +92,8 @@ public class KripkeBuchiProductSemanticsHelper {
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+
          BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics);
-         //verifier.setRuntime(kbProductSemantics);
 
          verifier.execute();
      }
