@@ -48,67 +48,73 @@ public class KripkeBuchiProductSemanticsTest {
      }
 
 ///////////////////////////////////////////////// Model ALiceBobPetterson /////////////////////////////////////////////////
-	@Test
-	public void testMutualExclusionOK() {
-		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
-		productSemantics.verify("", ltl);
-	}
-	
-	@Test
-	public void testMutualExclusionNOK() {
-		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
-		productSemantics.verify("", ltl);
-	}
-	
-	@Test
-	public void testFairnessPetterson() {
-		String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
-		productSemantics.verify("", ltl);
-	}
-	
+//	@Test
+//	public void testMutualExclusionOK() {
+//		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
+//		productSemantics.verify("", ltl);
+//	}
+//	
+//	@Test
+//	public void testMutualExclusionNOK() {
+//		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
+//		productSemantics.verify("", ltl);
+//	}
+//	
+//	@Test
+//	public void testFairnessPetterson() {
+//		String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
+//		productSemantics.verify("", ltl);
+//	}
+     
+// 	@Test
+// 	public void testFairnessPetterson() {
+// 		String ltl = "fairness = ! ([] (|alice.state == STATE_ALICE_W| -> <> |alice.state == STATE_ALICE_I|))";
+// 		productSemantics.verify("", ltl);
+// 	}
+//	
 ///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
 
-//	@Test
-//	public void testGateClosed() {
-//		String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| or |train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_GATE_OPENED|)";
-//		productSemantics.verify("", ltl);
-//	}
-//	
-//	@Test
-//	public void testRoadSignActive() {
-//		String ltl = "exclusion = ![]!((|train.state == STATE_TRAIN_APPROACHDETECTION| or |train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_ROADSIGN_INACTIVE|)";
-//		productSemantics.verify("", ltl);
-//	}
-//	
-//	@Test
-//	public void testGateOpenedAtferBeingClosed() {
-//		String ltl = "vivacite = ! ([] |gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
-//		productSemantics.verify("", ltl);
-//	}
-//
-//	@Test
-//	public void testRoadSignActiveAtferBeingInactive() {
-//		String ltl = "vivacite = ! ([] |roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
-//		productSemantics.verify("", ltl);
-//	}
-//	
-//	@Test
-//	public void deadlockfree() {
-//		ILanguageRuntime kripkeRuntime =  productSemantics.getViaTCPRuntime();
-//		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
-//
-//		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
-//
-//		boolean deadLockFree[] = new boolean[] { true };
-//		dV.announcer.when(FinalStateDetected.class, (ann, ev) -> {
-//			System.out.println("Final state detected: " + ev.getFinalState() );
-//			deadLockFree[0] = false;
-//		});
-//
-//		explorer.execute();
-//
-//		assertTrue("The model has a deadlock.", deadLockFree[0]);
-//	}
+	@Test
+	public void testGateClosed() {
+		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_GATE_OPENED|)";
+		productSemantics.verify("", ltl);
+	}
+	
+	@Test
+	public void testRoadSignActive() {
+		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+		productSemantics.verify("", ltl);
+	}
+	
+	@Test
+	public void testGateOpenedAtferBeingClosed() {
+		String ltl = "vivacite = ![] (|gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
+		productSemantics.verify("", ltl);
+	}
+
+	@Test
+	public void testRoadSignActiveAtferBeingInactive() {
+		String ltl = "vivacite = ![] (|roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+		productSemantics.verify("", ltl);
+	}
+	
+	@Test
+	public void deadlockfree() {
+		ILanguageRuntime kripkeRuntime =  productSemantics.getViaTCPRuntime();
+		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
+
+		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
+
+		boolean deadLockFree[] = new boolean[] { true };
+		dV.announcer.when(FinalStateDetected.class, (ann, ev) -> {
+			System.out.println("Final state detected: " + ev.getFinalState() );
+			deadLockFree[0] = false;
+		});
+
+		explorer.execute();
+
+		assertTrue("The model has a deadlock.", deadLockFree[0]);
+	}
 
 	
 //	@Test
