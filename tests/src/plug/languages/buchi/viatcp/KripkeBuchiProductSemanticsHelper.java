@@ -1,11 +1,10 @@
 package plug.languages.buchi.viatcp;
 
-
 import java.io.PrintWriter;
-
+import org.junit.Assert;
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
-import plug.explorer.buchi.AcceptanceCycleDetectedException;
+import plug.events.PropertyEvent;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
 import plug.language.buchi.runtime.BuchiRuntime;
@@ -68,12 +67,12 @@ public class KripkeBuchiProductSemanticsHelper {
      
 
 
-     public void verify(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+     public void verify(String fileName, String ltl, boolean verified) {
          //verify_recursive(fileName, ltl);
-         verify_iterative(ltl);
+         verify_iterative(ltl, verified);
      }
 
-     private void verify_recursive(String fileName, String ltl) throws AcceptanceCycleDetectedException {
+     private void verify_recursive(String fileName, String ltl, boolean verified) {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
@@ -81,10 +80,18 @@ public class KripkeBuchiProductSemanticsHelper {
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
          BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive(kbProductSemantics);
 
+         boolean[] result = new boolean[] { true };
+         verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
+             result[0] &= event.isVerified();
+         });
          verifier.execute();
+
+         if (result[0] != verified) {
+             Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
+         }
      }
 
-     private void verify_iterative(String ltl) throws AcceptanceCycleDetectedException {
+     private void verify_iterative(String ltl, boolean verified) {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
@@ -93,6 +100,14 @@ public class KripkeBuchiProductSemanticsHelper {
 
          BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics);
 
+         boolean[] result = new boolean[] { true };
+         verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
+             result[0] &= event.isVerified();
+         });
          verifier.execute();
+
+         if (result[0] != verified) {
+             Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
+         }
      }
 }

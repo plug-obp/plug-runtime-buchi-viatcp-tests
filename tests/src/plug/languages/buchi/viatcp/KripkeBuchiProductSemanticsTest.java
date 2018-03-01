@@ -2,19 +2,10 @@ package plug.languages.buchi.viatcp;
 
 
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import plug.core.ILanguageRuntime;
-import plug.explorer.AbstractExplorer;
-import plug.explorer.BFSExplorer;
-import plug.statespace.SimpleStateSpaceManager;
-import plug.verifiers.deadlock.DeadlockVerifier;
-import plug.verifiers.deadlock.FinalStateDetected;
 
 
 public class KripkeBuchiProductSemanticsTest {
@@ -51,19 +42,19 @@ public class KripkeBuchiProductSemanticsTest {
 	@Test
 	public void testMutualExclusionOK() {
 		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
-		productSemantics.verify("", ltl);
+		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
 	public void testMutualExclusionNOK() {
 		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
-		productSemantics.verify("", ltl);
+		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
 	public void testFairnessPetterson() {
 		String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
-		productSemantics.verify("", ltl);
+		productSemantics.verify("", ltl, true);
 	}
 	
 ///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
