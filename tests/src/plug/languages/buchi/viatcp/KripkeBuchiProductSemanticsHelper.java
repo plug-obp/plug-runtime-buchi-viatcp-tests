@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import org.junit.Assert;
 import plug.core.ILanguageModule;
 import plug.core.ILanguageRuntime;
+import plug.core.RuntimeDescription;
 import plug.events.PropertyEvent;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
@@ -76,8 +77,9 @@ public class KripkeBuchiProductSemanticsHelper {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+         RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
 
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
          BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive(kbProductSemantics);
 
          boolean[] result = new boolean[] { true };
@@ -95,8 +97,9 @@ public class KripkeBuchiProductSemanticsHelper {
          ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+         RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
 
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripkeRuntime, module, buchiRuntime);
+         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
 
          BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics);
 
