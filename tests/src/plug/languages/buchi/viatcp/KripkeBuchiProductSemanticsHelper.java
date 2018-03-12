@@ -12,6 +12,7 @@ import plug.language.buchi.runtime.BuchiRuntime;
 import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
 import plug.language.viatcp.ViaTCPModule;
 import plug.language.viatcp.runtime.ViaTCPRuntime;
+import plug.statespace.SimpleStateSpaceManager;
 import properties.BuchiAutomata.BuchiAutomataModel.BuchiDeclaration;
 import properties.LTL.parser.Parser;
 import properties.LTL.transformations.LTL2Buchi;
@@ -101,7 +102,7 @@ public class KripkeBuchiProductSemanticsHelper {
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
 
-         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics);
+         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics, new SimpleStateSpaceManager());
 
          boolean[] result = new boolean[] { true };
          verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
