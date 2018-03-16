@@ -81,7 +81,7 @@ public class KripkeBuchiProductSemanticsHelper {
          RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
-         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive(kbProductSemantics);
+         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive<>(kbProductSemantics);
 
          boolean[] result = new boolean[] { true };
          verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
@@ -102,7 +102,7 @@ public class KripkeBuchiProductSemanticsHelper {
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
 
-         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative(kbProductSemantics, new SimpleStateSpaceManager());
+         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative<>(kbProductSemantics, new SimpleStateSpaceManager());
 
          boolean[] result = new boolean[] { true };
          verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
