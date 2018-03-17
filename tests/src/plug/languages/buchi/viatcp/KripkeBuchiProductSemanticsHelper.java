@@ -3,7 +3,7 @@ package plug.languages.buchi.viatcp;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import plug.core.ILanguagePlugin;
-import plug.core.ILanguageRuntime;
+import plug.core.ITransitionRelation;
 import plug.core.RuntimeDescription;
 import plug.events.PropertyEvent;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
@@ -45,7 +45,7 @@ public class KripkeBuchiProductSemanticsHelper {
      * Getter of the model interpreter runtime.
      * @return the instance of the model interpreter runtime
      */
-     public ILanguageRuntime getViaTCPRuntime() {
+     public ITransitionRelation getViaTCPRuntime() {
     	 return runtime;
      }
      
@@ -75,7 +75,7 @@ public class KripkeBuchiProductSemanticsHelper {
      }
 
      private void verify_recursive(String fileName, String ltl, boolean verified) {
-         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+         ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
          RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
@@ -95,7 +95,7 @@ public class KripkeBuchiProductSemanticsHelper {
      }
 
      private void verify_iterative(String ltl, boolean verified) {
-         ILanguageRuntime kripkeRuntime = getViaTCPRuntime();
+         ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
          RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);

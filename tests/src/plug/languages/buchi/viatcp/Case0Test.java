@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import plug.core.ILanguageRuntime;
+import plug.core.ITransitionRelation;
 import plug.explorer.AbstractExplorer;
 import plug.explorer.BFSExplorer;
 import plug.statespace.SimpleStateSpaceManager;
@@ -75,7 +75,7 @@ public class Case0Test {
 	
 	@Test
 	public void deadlockfree() {
-		ILanguageRuntime kripkeRuntime =  productSemantics.getViaTCPRuntime();
+		ITransitionRelation kripkeRuntime =  productSemantics.getViaTCPRuntime();
 		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
 
 		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
