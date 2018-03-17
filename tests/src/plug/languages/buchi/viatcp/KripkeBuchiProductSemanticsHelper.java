@@ -2,7 +2,7 @@ package plug.languages.buchi.viatcp;
 
 import java.io.PrintWriter;
 import org.junit.Assert;
-import plug.core.ILanguageModule;
+import plug.core.ILanguagePlugin;
 import plug.core.ILanguageRuntime;
 import plug.core.RuntimeDescription;
 import plug.events.PropertyEvent;
@@ -10,7 +10,7 @@ import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Iterative;
 import plug.explorer.buchi.nested_dfs.BA_GaiserSchwoon_Recursive;
 import plug.language.buchi.runtime.BuchiRuntime;
 import plug.language.buchikripke.runtime.KripkeBuchiProductSemantics;
-import plug.language.viatcp.ViaTCPModule;
+import plug.language.viatcp.ViaTCPPlugin;
 import plug.language.viatcp.runtime.ViaTCPRuntime;
 import plug.statespace.SimpleStateSpaceManager;
 import properties.BuchiAutomata.BuchiAutomataModel.BuchiDeclaration;
@@ -24,7 +24,7 @@ public class KripkeBuchiProductSemanticsHelper {
 	/**
 	 * The instance of the language module.
 	 */
-    private ILanguageModule module;
+    private ILanguagePlugin module;
     
     /**
      * The instance of the model interpreter runtime.
@@ -37,7 +37,7 @@ public class KripkeBuchiProductSemanticsHelper {
      * @return an instance of KripkeBuchiProductSemanticsTest.
      */
     public KripkeBuchiProductSemanticsHelper() {
-    	module = new ViaTCPModule();
+    	module = new ViaTCPPlugin();
     	runtime = new ViaTCPRuntime("localhost", 12121);
     }
 
