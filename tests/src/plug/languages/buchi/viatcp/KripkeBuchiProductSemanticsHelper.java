@@ -78,7 +78,7 @@ public class KripkeBuchiProductSemanticsHelper {
          ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-         RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
+         RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
          BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive<>(kbProductSemantics);
@@ -98,7 +98,7 @@ public class KripkeBuchiProductSemanticsHelper {
          ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-         RuntimeDescription kripke = new RuntimeDescription(kripkeRuntime, module);
+         RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
 
          KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
 
