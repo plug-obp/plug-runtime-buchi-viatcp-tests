@@ -69,12 +69,12 @@ public class KripkeBuchiProductSemanticsHelper {
      
 
 
-     public void verify(String fileName, String ltl, boolean verified) {
+     public void verify(String fileName, String ltl, boolean verified) throws Exception {
          //verify_recursive(fileName, ltl);
          verify_iterative(ltl, verified);
      }
 
-     private void verify_recursive(String fileName, String ltl, boolean verified) {
+     private void verify_recursive(String fileName, String ltl, boolean verified) throws Exception {
          ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
@@ -94,7 +94,7 @@ public class KripkeBuchiProductSemanticsHelper {
          }
      }
 
-     private void verify_iterative(String ltl, boolean verified) {
+     private void verify_iterative(String ltl, boolean verified) throws Exception {
          ITransitionRelation kripkeRuntime = getViaTCPRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);

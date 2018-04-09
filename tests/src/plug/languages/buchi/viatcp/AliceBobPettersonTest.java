@@ -37,19 +37,19 @@ public class AliceBobPettersonTest {
 	 }
 
 	@Test
-	public void testMutualExclusionOK() {
+	public void testMutualExclusionOK() throws Exception {
 		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_CS| && |bob.state == STATE_BOB_CS|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
-	public void testMutualExclusionNOK() {
+	public void testMutualExclusionNOK() throws Exception {
 		String ltl = "exclusion = ![]!(|alice.state == STATE_ALICE_I| && |bob.state == STATE_BOB_I|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
-	public void testFairnessPetterson() {
+	public void testFairnessPetterson() throws Exception {
 		String ltl = "fairness = ! ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
 		productSemantics.verify("", ltl, true);
 	}

@@ -2,19 +2,19 @@ package plug.languages.buchi.viatcp;
 
 
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import plug.core.ITransitionRelation;
 import plug.explorer.AbstractExplorer;
 import plug.explorer.BFSExplorer;
 import plug.statespace.SimpleStateSpaceManager;
 import plug.verifiers.deadlock.DeadlockVerifier;
 import plug.verifiers.deadlock.FinalStateDetected;
+
+
+import static org.junit.Assert.assertTrue;
 
 
 public class Case0Test {
@@ -50,31 +50,31 @@ public class Case0Test {
 ///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
 
 	@Test
-	public void testGateClosed() {
+	public void testGateClosed() throws Exception {
 		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_GATE_OPENED|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
-	public void testRoadSignActive() {
+	public void testRoadSignActive() throws Exception {
 		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
-	public void testGateOpenedAtferBeingClosed() {
+	public void testGateOpenedAtferBeingClosed() throws Exception {
 		String ltl = "vivacite = ![] (|gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
 		productSemantics.verify("", ltl, true);
 	}
 
 	@Test
-	public void testRoadSignActiveAtferBeingInactive() {
+	public void testRoadSignActiveAtferBeingInactive() throws Exception {
 		String ltl = "vivacite = ![] (|roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
-	public void deadlockfree() {
+	public void deadlockfree() throws Exception {
 		ITransitionRelation kripkeRuntime =  productSemantics.getViaTCPRuntime();
 		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
 
