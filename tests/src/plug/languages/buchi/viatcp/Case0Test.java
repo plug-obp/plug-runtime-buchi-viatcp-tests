@@ -7,8 +7,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import plug.core.ITransitionRelation;
+import plug.core.view.ConfigurationItem;
 import plug.explorer.AbstractExplorer;
 import plug.explorer.BFSExplorer;
+import plug.language.viatcp.model.Configuration;
+import plug.language.viatcp.simulation.ui.ConfigurationTreeGenerator;
 import plug.statespace.SimpleStateSpaceManager;
 import plug.verifiers.deadlock.DeadlockVerifier;
 import plug.verifiers.deadlock.FinalStateDetected;
@@ -51,30 +54,37 @@ public class Case0Test {
 
 	@Test
 	public void testGateClosed() throws Exception {
-		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |gate.state == STATE_GATE_OPENED|)";
+		String ltl = "exclusion = [] !((|train.state == STATE_TRAIN_PASSING|) and |gate.state == STATE_GATE_OPEN|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
 	public void testRoadSignActive() throws Exception {
-		String ltl = "exclusion = ![] !((|train.state == STATE_TRAIN_WAITEXITDETECTION|) and |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+		String ltl = "exclusion = [] !((|train.state == STATE_TRAIN_PASSING|) and |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
 	@Test
 	public void testGateOpenedAtferBeingClosed() throws Exception {
-		String ltl = "vivacite = ![] (|gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPENED|)";
+		String ltl = "vivacite = [] (|gate.state == STATE_GATE_CLOSED| -> <> |gate.state == STATE_GATE_OPEN|)";
 		productSemantics.verify("", ltl, true);
 	}
 
 	@Test
 	public void testRoadSignActiveAtferBeingInactive() throws Exception {
-		String ltl = "vivacite = ![] (|roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
+		String ltl = "vivacite = [] (|roadSign.state == STATE_ROADSIGN_ACTIVE| -> <> |roadSign.state == STATE_ROADSIGN_INACTIVE|)";
 		productSemantics.verify("", ltl, true);
 	}
 	
+//	@Test
+//	public void testTrainPassing() throws Exception {
+//		String ltl = "vivacite = [] (|train.state == STATE_TRAIN_CLOSE| -> <> |train.state == STATE_TRAIN_PASSING|)";
+//		productSemantics.verify("", ltl, true);
+//	}
+	
 	@Test
 	public void deadlockfree() throws Exception {
+		int nbDeadlocks[] = new int[] {0};
 		ITransitionRelation kripkeRuntime =  productSemantics.getViaTCPRuntime();
 		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
 
@@ -83,12 +93,14 @@ public class Case0Test {
 		boolean deadLockFree[] = new boolean[] { true };
 		dV.announcer.when(FinalStateDetected.class, (ann, ev) -> {
 			System.out.println("Final state detected: " + ev.getFinalState() );
+			ConfigurationItem item = ConfigurationTreeGenerator.generateTree((Configuration) ev.getFinalState());
 			deadLockFree[0] = false;
+			nbDeadlocks[0] = nbDeadlocks[0] + 1;
 		});
 
 		explorer.execute();
 
-		assertTrue("The model has a deadlock.", deadLockFree[0]);
+		assertTrue("The model has " + nbDeadlocks[0] + " deadlocks.", deadLockFree[0]);
 	}
 
 	
