@@ -28,12 +28,12 @@ public class AliceBobPettersonTest {
 	 @AfterClass
 	 public static void tearDownClass() {
 		 // Do something after each test
-		 productSemantics.getViaTCPRuntimeRealType().closeConnection();
+		 productSemantics.getViaTCPRuntime().close();
 	 }
 	 
 	 @Before
 	 public void setUp() {
-		 productSemantics.getViaTCPRuntimeRealType().getPilot().resetInterpretation();
+		 productSemantics.getViaTCPRuntime().getPilot().resetInterpretation();
 	 }
 
 	@Test

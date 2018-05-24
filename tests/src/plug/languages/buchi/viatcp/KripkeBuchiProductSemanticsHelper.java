@@ -45,11 +45,11 @@ public class KripkeBuchiProductSemanticsHelper {
      * Getter of the model interpreter runtime.
      * @return the instance of the model interpreter runtime
      */
-     public ITransitionRelation getViaTCPRuntime() {
+     public ITransitionRelation getRuntime() {
     	 return runtime;
      }
      
-     public ViaTCPRuntime getViaTCPRuntimeRealType() {
+     public ViaTCPRuntime getViaTCPRuntime() {
     	 return runtime;
      }
 
@@ -75,7 +75,7 @@ public class KripkeBuchiProductSemanticsHelper {
      }
 
      private void verify_recursive(String fileName, String ltl, boolean verified) throws Exception {
-         ITransitionRelation kripkeRuntime = getViaTCPRuntime();
+         ITransitionRelation kripkeRuntime = getRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
          RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
@@ -95,7 +95,7 @@ public class KripkeBuchiProductSemanticsHelper {
      }
 
      private void verify_iterative(String ltl, boolean verified) throws Exception {
-         ITransitionRelation kripkeRuntime = getViaTCPRuntime();
+         ITransitionRelation kripkeRuntime = getRuntime();
          BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
          BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
          RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);

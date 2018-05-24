@@ -2,25 +2,25 @@ package plug.languages.buchi.viatcp;
 
 
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import emi.core.model.Configuration;
+import emi.core.serialization.ConfigurationTreeGenerator;
 import plug.core.ITransitionRelation;
 import plug.core.view.ConfigurationItem;
 import plug.explorer.AbstractExplorer;
 import plug.explorer.BFSExplorer;
-import plug.language.viatcp.model.Configuration;
-import plug.language.viatcp.simulation.ui.ConfigurationTreeGenerator;
 import plug.statespace.SimpleStateSpaceManager;
 import plug.verifiers.deadlock.DeadlockVerifier;
 import plug.verifiers.deadlock.FinalStateDetected;
 
 
-import static org.junit.Assert.assertTrue;
-
-
-public class Case0Test {
+public class LevelCrossingTest {
 	
 	private static KripkeBuchiProductSemanticsHelper productSemantics;
 
@@ -29,7 +29,7 @@ public class Case0Test {
      * 
      * @return an instance of KripkeBuchiProductSemanticsTest.
      */
-    public Case0Test() {
+    public LevelCrossingTest() {
     	
     }
 
@@ -42,12 +42,12 @@ public class Case0Test {
      @AfterClass
      public static void tearDownClass() {
     	 // Do something after each test
-    	 productSemantics.getViaTCPRuntimeRealType().closeConnection();
+    	 productSemantics.getViaTCPRuntime().close();
      }
      
      @Before
      public void setUp() {
-    	 productSemantics.getViaTCPRuntimeRealType().getPilot().resetInterpretation();
+    	 productSemantics.getViaTCPRuntime().getPilot().resetInterpretation();
      }
 
 ///////////////////////////////////////////////// Model Case0sync /////////////////////////////////////////////////
@@ -85,7 +85,7 @@ public class Case0Test {
 	@Test
 	public void deadlockfree() throws Exception {
 		int nbDeadlocks[] = new int[] {0};
-		ITransitionRelation kripkeRuntime =  productSemantics.getViaTCPRuntime();
+		ITransitionRelation kripkeRuntime =  productSemantics.getRuntime();
 		AbstractExplorer explorer = new BFSExplorer(kripkeRuntime, new SimpleStateSpaceManager<>());
 
 		DeadlockVerifier dV = new DeadlockVerifier(explorer.getAnnouncer());
