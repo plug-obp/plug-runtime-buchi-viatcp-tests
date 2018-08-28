@@ -1,7 +1,9 @@
 package plug.languages.buchi.viatcp;
 
 import java.io.PrintWriter;
+
 import org.junit.Assert;
+
 import plug.core.ILanguagePlugin;
 import plug.core.ITransitionRelation;
 import plug.core.RuntimeDescription;

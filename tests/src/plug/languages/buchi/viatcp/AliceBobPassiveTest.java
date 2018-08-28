@@ -8,7 +8,7 @@ import org.junit.Test;
 //import emi.analysis.exception.EMIException;
 
 
-public class AliceBobPettersonTest {
+public class AliceBobPassiveTest {
 	
 	private static KripkeBuchiProductSemanticsHelper productSemantics;
 	
@@ -17,7 +17,7 @@ public class AliceBobPettersonTest {
 	 * 
 	 * @return an instance of KripkeBuchiProductSemanticsTest.
 	 */
-	public AliceBobPettersonTest() {
+	public AliceBobPassiveTest() {
 		
 	}
 	
@@ -57,7 +57,7 @@ public class AliceBobPettersonTest {
 	
 	@Test
 	public void testFairnessPetterson() throws Exception {
-		String ltl = "fairness = ([] (|alice.flagAlice == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|bob.flagBob == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
+		String ltl = "fairness = ([] (|objects[0].flag == 1| -> <> |alice.state == STATE_ALICE_CS|) && (|objects[1].flag == 1| -> <> |bob.state == STATE_BOB_CS|)  )";
 		productSemantics.verify("", ltl, true);
 	}
 
