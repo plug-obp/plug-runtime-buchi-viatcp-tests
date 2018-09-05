@@ -22,98 +22,100 @@ import properties.PropositionalLogic.PropositionalLogicModel.DeclarationBlock;
 import properties.PropositionalLogic.PropositionalLogicModel.Expression;
 
 public class KripkeBuchiProductSemanticsHelper {
-	
+
 	/**
 	 * The instance of the language module.
 	 */
-    private ILanguagePlugin module;
-    
-    /**
-     * The instance of the model interpreter runtime.
-     */
+	private ILanguagePlugin module;
+
+	/**
+	 * The instance of the model interpreter runtime.
+	 */
 	private ViaTCPRuntime runtime;
-    
-    /**
-     * Constructor of KripkeBuchiProductSemanticsTest.
-     * 
-     * @return an instance of KripkeBuchiProductSemanticsTest.
-     */
-    public KripkeBuchiProductSemanticsHelper() {
-    	module = new ViaTCPPlugin();
-    	runtime = new ViaTCPRuntime("localhost", 12121);
-    }
 
-    /**
-     * Getter of the model interpreter runtime.
-     * @return the instance of the model interpreter runtime
-     */
-     public ITransitionRelation getRuntime() {
-    	 return runtime;
-     }
-     
-     public ViaTCPRuntime getViaTCPRuntime() {
-    	 return runtime;
-     }
+	/**
+	 * Constructor of KripkeBuchiProductSemanticsTest.
+	 * 
+	 * @return an instance of KripkeBuchiProductSemanticsTest.
+	 */
+	public KripkeBuchiProductSemanticsHelper() {
+		module = new ViaTCPPlugin();
+		runtime = new ViaTCPRuntime("localhost", 12121);
+	}
 
-     /**
-      * Get the Buchi declaration corresponding to a LTL formula.
-      * @param ltlFormula the LTL formula.
-      * @return the Buchi declaration.
-      */
-     public BuchiDeclaration getBuchiDeclaration(String ltlFormula) {
-         DeclarationBlock propertiesBlock = Parser.parseBlock(ltlFormula);
-         Expression property = propertiesBlock.getDeclarations().iterator().next().getExpression();
-         LTL2Buchi convertor = new LTL2Buchi(new PrintWriter(System.out));
+	/**
+	 * Getter of the model interpreter runtime.
+	 * 
+	 * @return the instance of the model interpreter runtime
+	 */
+	public ITransitionRelation getRuntime() {
+		return runtime;
+	}
 
-         BuchiDeclaration decl = convertor.convert(property);
-         return decl;
-     }
-     
+	public ViaTCPRuntime getViaTCPRuntime() {
+		return runtime;
+	}
 
+	/**
+	 * Get the Buchi declaration corresponding to a LTL formula.
+	 * 
+	 * @param ltlFormula
+	 *            the LTL formula.
+	 * @return the Buchi declaration.
+	 */
+	public BuchiDeclaration getBuchiDeclaration(String ltlFormula) {
+		DeclarationBlock propertiesBlock = Parser.parseBlock(ltlFormula);
+		Expression property = propertiesBlock.getDeclarations().iterator().next().getExpression();
+		LTL2Buchi convertor = new LTL2Buchi(new PrintWriter(System.out));
 
-     public void verify(String fileName, String ltl, boolean verified) throws Exception {
-         //verify_recursive(fileName, ltl);
-         verify_iterative(ltl, verified);
-     }
+		BuchiDeclaration decl = convertor.convert(property);
+		return decl;
+	}
 
-     private void verify_recursive(String fileName, String ltl, boolean verified) throws Exception {
-         ITransitionRelation kripkeRuntime = getRuntime();
-         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-         RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
+	public void verify(String fileName, String ltl, boolean verified) throws Exception {
+		// verify_recursive(fileName, ltl);
+		verify_iterative(ltl, verified);
+	}
 
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
-         BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive<>(kbProductSemantics);
+	private void verify_recursive(String fileName, String ltl, boolean verified) throws Exception {
+		ITransitionRelation kripkeRuntime = getRuntime();
+		BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
+		BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+		RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
 
-         boolean[] result = new boolean[] { true };
-         verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
-             result[0] &= event.isVerified();
-         });
-         verifier.execute();
+		KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
+		BA_GaiserSchwoon_Recursive verifier = new BA_GaiserSchwoon_Recursive<>(kbProductSemantics);
 
-         if (result[0] != verified) {
-             Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
-         }
-     }
+		boolean[] result = new boolean[] { true };
+		verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
+			result[0] &= event.isVerified();
+		});
+		verifier.execute();
 
-     private void verify_iterative(String ltl, boolean verified) throws Exception {
-         ITransitionRelation kripkeRuntime = getRuntime();
-         BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
-         BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
-         RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
+		if (result[0] != verified) {
+			Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
+		}
+	}
 
-         KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
+	private void verify_iterative(String ltl, boolean verified) throws Exception {
+		ITransitionRelation kripkeRuntime = getRuntime();
+		BuchiDeclaration buchiAutomaton = getBuchiDeclaration(ltl);
+		BuchiRuntime buchiRuntime = new BuchiRuntime(buchiAutomaton);
+		RuntimeDescription kripke = new RuntimeDescription(module, () -> kripkeRuntime);
 
-         BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative<>(kbProductSemantics, new SimpleStateSpaceManager());
+		KripkeBuchiProductSemantics kbProductSemantics = new KripkeBuchiProductSemantics(kripke, buchiRuntime);
 
-         boolean[] result = new boolean[] { true };
-         verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
-             result[0] &= event.isVerified();
-         });
-         verifier.execute();
+		BA_GaiserSchwoon_Iterative verifier = new BA_GaiserSchwoon_Iterative<>(kbProductSemantics,
+				new SimpleStateSpaceManager());
 
-         if (result[0] != verified) {
-             Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
-         }
-     }
+		boolean[] result = new boolean[] { true };
+		verifier.getAnnouncer().when(PropertyEvent.class, (announcer, event) -> {
+			result[0] &= event.isVerified();
+		});
+		verifier.execute();
+
+		if (result[0] != verified) {
+			Assert.fail("Property " + (result[0] ? "is verified but shouldn't" : "isn't verified but should"));
+		}
+	}
 }
